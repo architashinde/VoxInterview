@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Mona_Sans } from "next/font/google";
+import { Mona_Sans, Inter } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const monaSans = Mona_Sans({
   variable: "--font-monasans",
@@ -16,9 +19,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className="dark"
+      className={cn("dark", "font-sans", inter.variable)}
     >
-      <body className={`${monaSans.className} antialiased`}>{children}</body>
+      <body className={`${monaSans.className} antialiased pattern`}>{children}</body>
     </html>
   );
 }
