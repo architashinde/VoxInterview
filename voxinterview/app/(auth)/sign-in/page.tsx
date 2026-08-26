@@ -5,3 +5,5 @@ const Page = () => {
     <AuthForm type = "sign-in"/>
   );
 };
+
+export default Page;
