@@ -12,25 +12,12 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
 import {
   Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group"
 import Link from 'next/dist/client/link';
 import FormField from './FormField';
 
@@ -77,12 +64,12 @@ const AuthForm = ({ type }: AuthFormProps) => {
      <div className="card-border lg:min-w-141.5">
       <Card className="w-full sm:max-w-md">
       <CardContent>
-        <div className="flex flex-col gap-6 card py-14 px-10">
+        <div className="flex flex-col gap-6 card py-8 px-10">
           <div className="flex flex-row gap-2 items-center justify-center">
             <Image src="/logo.png" alt="Logo" width={32} height={28} />
-            <h1 className="text-primary-100">VoxInterview</h1>
+            <h1 className="text-primary-100 text-bold">VoxInterview</h1>
           </div>
-          <h2>Practice Interviews with AI</h2>
+          <h3>Practice Interviews with AI</h3>
         </div>
         <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
           {!isSignIn && (
@@ -96,7 +83,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
            <Button type="button" variant="outline" onClick={() => form.reset()}>
              Reset
            </Button>
-           <Button type="submit">{isSignIn ? "Sign In" : "Create an Account"}</Button>
+           <Button type="submit" form='form-rhf-demo'>{isSignIn ? "Sign In" : "Create an Account"}</Button>
          </Field>
        </CardFooter>
        <p className="text-center">
@@ -104,7 +91,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
            <Link href={!isSignIn ? "/sign-in" : "/sign-up"} className="font-bold text-user-primary hover:underline ml-1">
              {isSignIn ? "Sign Up" : "Sign In"}
            </Link>
-         </p>
+        </p>
      </Card>
     </div>
 );
