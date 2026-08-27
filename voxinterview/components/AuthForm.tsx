@@ -6,6 +6,7 @@ import {Controller, useForm } from "react-hook-form";
 import {toast} from "sonner";
 import * as z from "zod";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button"
 import {
@@ -30,133 +31,80 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group"
+import Link from 'next/dist/client/link';
+import FormField from './FormField';
 
-
-const formSchema = z.object({
-  title: z
-    .string()
-    .min(5, "Bug title must be at least 5 characters.")
-    .max(32, "Bug title must be at most 32 characters."),
-  description: z
-    .string()
-    .min(20, "Description must be at least 20 characters.")
-    .max(100, "Description must be at most 100 characters."),
-})
 interface AuthFormProps {
     type: "sign-in" | "sign-up";
 }
+
+const authformschema = (type: AuthFormProps["type"]) => {
+  return z.object({
+    name: type === "sign-up" ? z.string().min(3, { message: "Name is required" }) : z.string().optional(),
+    email: z.string().email({ message: "Invalid email address" }),
+    password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  })
+}
+
 const AuthForm = ({ type }: AuthFormProps) => {
-     const form = useForm<z.infer<typeof formSchema>>({
-     resolver: zodResolver(formSchema),
+    const router = useRouter();
+    const form = useForm<z.infer<ReturnType<typeof authformschema>>>({
+     resolver: zodResolver(authformschema(type)),
      defaultValues: {
-       title: "",
-       description: "",
+       name: "",
+       email: "",
+       password: "",
      },
      })
-     function onSubmit(data: z.infer<typeof formSchema>) {
-     // Do something with the form values.
-     toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: "bottom-right",
-      classNames: {
-        content: "flex flex-col gap-2",
-      },
-      style: {
-        "--border-radius": "calc(var(--radius)  + 4px)",
-      } as React.CSSProperties,
-     })
-     console.log(data)
-     }
+    function onSubmit(data: z.infer<ReturnType<typeof authformschema>>) {
+      try{
+        if(type === "sign-up"){
+          toast.success("Account created successfully!");
+          router.push("/sign-in");
+        }else{
+          toast.success("Signed in successfully!");
+          router.push("/");
+        }
+      }catch(error){
+        console.log(error);
+        toast.error("Something went wrong. Please try again.");
+      }
+    }
+
+     const isSignIn = type === "sign-in";
  
     return (
      <div className="card-border lg:min-w-141.5">
       <Card className="w-full sm:max-w-md">
-      <CardHeader>
-        <CardTitle>Bug Report</CardTitle>
-        <CardDescription>
-          Help us improve by reporting bugs you encounter.
-        </CardDescription>
-      </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-6 card py-14 px-10">
-          <div className="flex flex-row gap-2 justify-center">
-            <Image src="/logo.svg" alt="Logo" width={38} height={32} />
-            <h2 className="text-primary-100">VoxInterview</h2>
+          <div className="flex flex-row gap-2 items-center justify-center">
+            <Image src="/logo.png" alt="Logo" width={32} height={28} />
+            <h1 className="text-primary-100">VoxInterview</h1>
           </div>
+          <h2>Practice Interviews with AI</h2>
         </div>
-        <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              name="title"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-title">
-                    Bug Title
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id="form-rhf-demo-title"
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Login button not working on mobile"
-                    autoComplete="off"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-            <Controller
-              name="description"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="form-rhf-demo-description">
-                    Description
-                  </FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea
-                      {...field}
-                      id="form-rhf-demo-description"
-                      placeholder="I'm having an issue with the login button on mobile."
-                      rows={6}
-                      className="min-h-24 resize-none"
-                      aria-invalid={fieldState.invalid}
-                    />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/100 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>
-                    Include steps to reproduce, expected behavior, and what
-                    actually happened.
-                    </FieldDescription>
-                     {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                 </Field>
-               )}
-             />
-           </FieldGroup>
+        <form id="form-rhf-demo" onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+          {!isSignIn && (
+          <FormField control={form.control} name="name" label="Name" placeholder="Enter your name" type="text" />)}
+          <FormField control={form.control} name="email" label="Email" placeholder="Enter your email" type="email" />
+          <FormField control={form.control} name="password" label="Password" placeholder="Enter your password" type="password" />
          </form>
        </CardContent>
        <CardFooter>
-         <Field orientation="horizontal">
+         <Field orientation="horizontal" >
            <Button type="button" variant="outline" onClick={() => form.reset()}>
              Reset
            </Button>
-           <Button type="submit" form="form-rhf-demo">
-             Submit
-           </Button>
+           <Button type="submit">{isSignIn ? "Sign In" : "Create an Account"}</Button>
          </Field>
        </CardFooter>
+       <p className="text-center">
+           {isSignIn ? "Don't have an account?" : "Already have an account?"}
+           <Link href={!isSignIn ? "/sign-in" : "/sign-up"} className="font-bold text-user-primary hover:underline ml-1">
+             {isSignIn ? "Sign Up" : "Sign In"}
+           </Link>
+         </p>
      </Card>
     </div>
 );
