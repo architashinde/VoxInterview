@@ -61,8 +61,8 @@ const AuthForm = ({ type }: AuthFormProps) => {
      const isSignIn = type === "sign-in";
  
     return (
-     <div className="card-border lg:min-w-141.5">
-      <Card className="w-full sm:max-w-md">
+     <div className="card-border">
+      <Card className="w-full sm:max-w-md lg:max-w-xl">
       <CardContent>
         <div className="flex flex-col gap-6 card py-8 px-10">
           <div className="flex flex-row gap-2 items-center justify-center">
