@@ -7,7 +7,7 @@ import {toast} from "sonner";
 import * as z from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -20,6 +20,8 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from 'next/dist/client/link';
 import FormField from './FormField';
+import { auth } from '@/firebase/client';
+import { signIn, signUp } from '@/lib/actions/auth.action';
 
 interface AuthFormProps {
     type: "sign-in" | "sign-up";
@@ -28,7 +30,7 @@ interface AuthFormProps {
 const authformschema = (type: AuthFormProps["type"]) => {
   return z.object({
     name: type === "sign-up" ? z.string().min(3, { message: "Name is required" }) : z.string().optional(),
-    email: z.string().email({ message: "Invalid email address" }),
+    email: z.string().email({ message: "Inval email address" }),
     password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   })
 }
@@ -43,12 +45,38 @@ const AuthForm = ({ type }: AuthFormProps) => {
        password: "",
      },
      })
-    function onSubmit(data: z.infer<ReturnType<typeof authformschema>>) {
+    async function onSubmit(data: z.infer<ReturnType<typeof authformschema>>) {
       try{
         if(type === "sign-up"){
+          const {name,email, password} = data;
+          const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+          const result =await signUp({
+            uid: userCredentials.user.uid,
+            email: email,
+            password: password,
+          })
+          if(result && !result.success){
+            toast.error(result.message);
+            return;
+          }
           toast.success("Account created successfully!");
           router.push("/sign-in");
         }else{
+
+          const {email, password} = data;
+          const userCredentials = await signInWithEmailAndPassword(auth, email, password);
+ 
+          const idToken = await userCredentials.user.getIdToken();
+          if(!idToken){
+            toast.error("Failed to get ID token. Please try again.");
+            return;
+          }
+          await signIn({
+            email: email,
+            idToken: idToken,
+            password: password,
+          })
+
           toast.success("Signed in successfully!");
           router.push("/");
         }

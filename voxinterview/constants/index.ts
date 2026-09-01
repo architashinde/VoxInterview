@@ -200,7 +200,6 @@ export const interviewCovers = [
   "/skype.png",
   "/spotify.png",
   "/telegram.png",
-  "/tiktok.png",
   "/yahoo.png",
 ];
 
@@ -226,7 +225,7 @@ export const dummyInterviews: Interview[] = [
     level: "Junior",
     questions: ["What is React?"],
     finalized: false,
-    createdAt: "2024-03-15T10:00:00Z",
+    createdAt: "2026-09-10T10:00:00Z",
   },
   {
     id: "2",
@@ -237,6 +236,6 @@ export const dummyInterviews: Interview[] = [
     level: "Senior",
     questions: ["What is Node.js?"],
     finalized: false,
-    createdAt: "2024-03-14T15:30:00Z",
+    createdAt: "2026-09-01T15:30:00Z",
   },
 ];
