@@ -52,6 +52,7 @@ const AuthForm = ({ type }: AuthFormProps) => {
           const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
           const result =await signUp({
             uid: userCredentials.user.uid,
+            name: name || "",
             email: email,
             password: password,
           })
