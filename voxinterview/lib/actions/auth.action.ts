@@ -10,6 +10,7 @@ interface SignUpParams {
     uid: string;
     email: string;
     password: string;
+    name: string;
 }
 
 interface SignInParams {
@@ -21,7 +22,7 @@ interface SignInParams {
 const ONE_WEEK = 60*60*24*7;
 
 export async function signUp(params: SignUpParams) {
-    const { uid, email, password } = params;
+    const { uid, email, password, name } = params;
 
     try{
         const userRecord = await getDoc(doc(db, "users", uid));
@@ -35,8 +36,8 @@ export async function signUp(params: SignUpParams) {
 
         await setDoc(doc(db, 'users', uid), {
             email: email,
-            name: name,
-            password: password
+            password: password,
+            name: name
         });
 
         return{
