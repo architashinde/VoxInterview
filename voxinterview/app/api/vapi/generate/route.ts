@@ -1,8 +1,8 @@
 import {generateText} from "ai";
 import {google} from "@ai-sdk/google";
-import {getFirestore} from "firebase-admin/firestore"
+import  {db} from "@/firebase/admin";
 
-const db = getFirestore();
+
 
 export async function GET(){
     return Response.json({success:true, data:"Thank You"}, {status: 200});
