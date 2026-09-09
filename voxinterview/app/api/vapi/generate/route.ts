@@ -1,6 +1,8 @@
 import {generateText} from "ai";
 import {google} from "@ai-sdk/google";
 import  {db} from "@/firebase/admin";
+import { constants } from "buffer";
+import { interviewCovers } from "@/constants";
 
 
 
@@ -46,5 +48,8 @@ export async function POST(request: Request){
 }
 
 function getRandomInterviewCover() {
-    throw new Error("Function not implemented.");
+    return interviewCovers[
+        Math.floor(Math.random() * interviewCovers.length)
+    ];
 }
+        
