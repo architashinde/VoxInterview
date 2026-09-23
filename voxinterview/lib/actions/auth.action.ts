@@ -17,16 +17,6 @@ interface SignInParams {
     password: string;
 }
 
-interface Interview {
-    id: string;
-    [key: string]: unknown;
-}
-
-interface GetLatestInterviewsParams {
-    userId: string;
-    limit?: number;
-}
-
 const ONE_WEEK = 60 * 60 * 24 * 7;
 
 export async function signUp(params: SignUpParams) {
@@ -139,31 +129,3 @@ export async function isAuthenticated(){
     return !!user;
 }
 
-export async function getInterviewByUserId(userId: string): Promise<Interview[] | null> {
-    const interview = await db
-          .collection('interviews')
-          .where('userId', '==', userId)
-          .orderBy('createdAt','desc')
-          .get();
-
-    return interview.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-    })) as Interview[];
-}
-
-export async function getLatestInterviews(params: GetLatestInterviewsParams): Promise<Interview[] | null> {
-    const {userId, limit = 20} = params;
-    const interview = await db
-          .collection('interviews')
-          .orderBy('createdAt','desc')
-          .where('finalized', '==', true)
-          .where('userId', '!=', userId)
-          .limit(limit)
-          .get();
-
-    return interview.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-    })) as Interview[];
-}

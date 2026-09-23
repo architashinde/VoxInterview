@@ -1,19 +1,18 @@
-/* eslint-disable react/jsx-no-undef */
 import React from "react";
-import { Feedback } from "@/types";
 import dayjs from "dayjs";
 import Image from "next/image";
 import {interviewCovers} from "@/constants/index";
 import { Button } from "./ui/button";
 import Link from "next/dist/client/link";
 import DisplayTechIcons from "./DisplayTechicons";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
 
 const getRandomInterviewCover = () => {
   const randomIndex = Math.floor(Math.random() * interviewCovers.length);
   return interviewCovers[randomIndex];
 };
-;interface InterviewCardProps {
+interface InterviewCardProps {
     id: string;
     userId: string;
     role: string;
@@ -23,13 +22,19 @@ const getRandomInterviewCover = () => {
     questions: string[];
     finalized: boolean;
     createdAt: string;
+    interviewId:string;
 }
 
-const InterviewCard = ({id, userId, role, type, techstack, level, questions, finalized, createdAt}:InterviewCardProps) => {
-    const feedback =null as Feedback | null;
+const InterviewCard = async ({id, userId, role, type, techstack, level, questions, finalized, createdAt, interviewId}:InterviewCardProps) => {
+    const feedback = userId && id 
+    ? await getFeedbackByInterviewId({interviewId, userId}): null;
     const normalizedType = /mix/gi.test(type) ? "Mixed" : type;
-    // eslint-disable-next-line react-hooks/purity
-    const formattedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format("MMMM D, YYYY");
+    const feedbackDate = feedback?.createdAt;
+    const formattedDate = dayjs(
+        typeof feedbackDate === "string" || typeof feedbackDate === "number" || feedbackDate instanceof Date
+            ? feedbackDate
+            : createdAt
+    ).format("MMMM D, YYYY");
     return(
         <div className="card-border max-sm:w-full min-h-96" style={{ width: "360px" }} >
             <div className="card-interview">
@@ -56,10 +61,16 @@ const InterviewCard = ({id, userId, role, type, techstack, level, questions, fin
                               width="22"
                               height="22"
                             />
-                            <p>{feedback?.totalScore || "---"}/100</p>
+                            <p>{feedback?.totalScore != null ? String(feedback.totalScore) : "---"}/100</p>
                         </div>
                     </div>
-                    <p className="line-clamp-2 mt-5">{feedback?.finalAssessment || "You haven't taken the interview yet. Take it now to improve your skills."}</p>
+                    <p className="line-clamp-2 mt-5">
+                        {feedback?.finalAssessment
+                            ? typeof feedback.finalAssessment === "string"
+                                ? feedback.finalAssessment
+                                : JSON.stringify(feedback.finalAssessment)
+                            : "You haven't taken the interview yet. Take it now to improve your skills."}
+                    </p>
                 </div>
                 <div className="flex flex-row justify-between">
                     <DisplayTechIcons techStack={techstack} />

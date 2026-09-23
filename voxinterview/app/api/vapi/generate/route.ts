@@ -47,7 +47,7 @@ export async function POST(request: Request){
     }
 }
 
-function getRandomInterviewCover() {
+export function getRandomInterviewCover() {
     return interviewCovers[
         Math.floor(Math.random() * interviewCovers.length)
     ];
