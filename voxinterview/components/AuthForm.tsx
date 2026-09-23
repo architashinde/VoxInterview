@@ -72,14 +72,18 @@ const AuthForm = ({ type }: AuthFormProps) => {
             toast.error("Failed to get ID token. Please try again.");
             return;
           }
-          await signIn({
+          const result=await signIn({
             email: email,
             idToken: idToken,
             password: password,
           })
-
+          if (!result?.success){
+            toast.error(result?.message ?? "Failed to sign-in");
+            return;
+          }
           toast.success("Signed in successfully!");
           router.push("/");
+          router.refresh();
         }
       }catch(error){
         console.log(error);

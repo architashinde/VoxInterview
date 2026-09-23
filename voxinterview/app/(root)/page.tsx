@@ -5,6 +5,9 @@ import InterviewCard from "@/components/InterviewCard";
 import { getCurrentUser, getInterviewByUserId, getLatestInterviews } from '@/lib/actions/auth.action';
 const Page = async () => {
   const user = await getCurrentUser();
+  if (!user) {
+   return null; // RootLayout's isAuthenticated() will redirect anyway
+  }
   const [userInterviews, latestInterviews] = await Promise.all([
     await getInterviewByUserId(user?.id!),
     await getLatestInterviews({userId: user?.id!})
