@@ -35,7 +35,7 @@ const Page = async () => {
         <div className="interviews-section">
           {hasPastInterviews ? (
             userInterviews?.map((interview) => (
-              <InterviewCard userId={''} role={''} type={''} techstack={[]} level={''} questions={[]} finalized={false} createdAt={''} {...interview} key={interview.id} />
+              <InterviewCard interviewId={''} userId={''} role={''} type={''} techstack={[]} level={''} questions={[]} finalized={false} createdAt={''} {...interview} key={interview.id} />
             ))
           ) : (
             <p>You haven&apos;t taken any interviews</p>
@@ -48,7 +48,7 @@ const Page = async () => {
         <div className="interviews-section">
           {hasUpcomingInterviews ? (
             latestInterviews?.map((interview) => (
-              <InterviewCard userId={''} role={''} type={''} techstack={[]} level={''} questions={[]} finalized={false} createdAt={''} {...interview} key={interview.id} />
+              <InterviewCard interviewId={''} userId={''} role={''} type={''} techstack={[]} level={''} questions={[]} finalized={false} createdAt={''} {...interview} key={interview.id} />
             ))
           ) : (
             <p>There are no new interviews available</p>
