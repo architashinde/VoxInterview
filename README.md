@@ -2,7 +2,7 @@
 
 An AI-powered mock interview platform. Practice technical and behavioral interviews with a voice AI interviewer and get instant, structured feedback.
 
-[Live Demo]() · Built with Next.js, Firebase, and Vapi AI
+[Live Demo](https://vox-interview.vercel.app/) · Built with Next.js, Firebase, and Vapi AI
 
 ## Features
 
